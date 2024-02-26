@@ -1,6 +1,7 @@
 # Scavenger
-Work in progress. its a platformer build with pygame
-it features a parralax background and player movements and animations
+Work in progress. its a platformer build with pygame.
+It features a parralax background and player movements and animations.
+This is a hobby project of mine I work on sometimes when I am bored.
 
 # To run
 - clone the repo
