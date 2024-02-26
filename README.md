@@ -6,3 +6,9 @@ it features a parralax background and player movements and animations
 - clone the repo
 - run ```cd 2dgame && poetry install``` to install the dependencies
 - run the game with ```poetry run python game.py```
+
+# Controls
+- 'a' -> left
+- 'd' -> right
+- 'spacebar' -> jump
+- 'shift' -> run
