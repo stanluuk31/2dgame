@@ -178,3 +178,12 @@ class SpriteSheet:
         image.set_colorkey(color)
 
         return image
+
+
+# TODO
+class Monster:
+    pass
+
+class Bomb:
+    def __init__(self, image):
+        pass
