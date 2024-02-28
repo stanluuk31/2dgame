@@ -1,40 +1,67 @@
 import pygame
 
-class Background(pygame.sprite.Sprite):
-    def __init__(self, image, x):
-        super().__init__()
+SPEED_INC = 1.04
+MAX_BACKGROUND_SPEED = 2
+HEIGHT = 950
+MAX_PLAYER_SPEED = 5
+
+class Background():
+    def __init__(self, image, x, speed_multiplier):
+        
         self.image = pygame.image.load(image).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, -100))
         self.width = self.rect.width
+        self.speed = 0
+        self.speed_mul = speed_multiplier
 
-    def update(self, speed):
-        self.rect.x -= speed
+
+    def handle_keys(self, key_events, pressed):
+        # keys clicked
+        for event in key_events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d:
+                    self.speed = self.speed_mul
+
+                elif event.key == pygame.K_a:
+                    self.speed = -self.speed_mul
+
+        # keys holded
+        if pressed[pygame.K_d]:
+            if self.speed < MAX_BACKGROUND_SPEED:
+                self.speed *= SPEED_INC
+
+        elif pressed[pygame.K_a]:
+            if self.speed > -MAX_BACKGROUND_SPEED:
+                self.speed *= SPEED_INC
+        else:
+            self.speed = 0
+
+
+    def update(self,speed):
+
+        self.rect.x -= speed * self.speed_mul
 
         
-
     def set_position(self, x):
         self.rect.x = x
 
-PLAYER_SPEED_INC = 1.04
-HEIGHT = 950
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.rect.x, -100))
+
+
 
 class Player:
-
-    # 162 x 160 sprite dimensions
-    
     def __init__(self, x):
         self.dimensions = 300
         self.animation_cooldown = 120
         self.scale = 3
         self.frame = 0
         self.speed = 1
-        self.jump_speed = 6
-        self.jump_duration = 0
         self.x = x
         self.y = HEIGHT - self.dimensions
-        self.jump_start_y = self.y
-        self.gravity = 1
-        self.jump_height = self.dimensions * 3
+
+
         self.idle_image = pygame.image.load('player/Idle.png').convert_alpha()
         self.idle_sprite = SpriteSheet(self.idle_image)
         self.idle_animations = []
@@ -60,30 +87,76 @@ class Player:
         for i in range(self.j_count):
             self.jump_animations.append(self.jump_sprite.get_image(i, 150, 150, self.scale, (0, 0, 0)))
 
-    def update(self, speed):
-        self.x = self.x + speed
+
+    def update(self, width):
+
+        self.x = self.x + self.speed
 
         if self.is_jumping:
             if self.j_count >= -20:
                 self.y -= int((self.j_count * abs(self.j_count)) * 0.1)
                 self.j_count -= 1
+
             else:
                 self.j_count = 20
                 self.is_jumping = False
+        
+        # bounding box for hero movement
+        if self.x >= width // 2 + 150:
+            self.x = width // 2 + 150
+        if self.x <= 400 - self.dimensions // 2:
+            self.x = 400 - self.dimensions // 2
 
     
+    def handle_keys(self, key_events, pressed):
+        # handle single presses
+        for event in key_events:
+            if event.type == pygame.QUIT:
+                exit(0)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d:
+                    self.speed = 1
 
+                elif event.key == pygame.K_a:
+                    self.speed = -1
 
-    def draw(self, screen, a_type, flipped=None):
-
-        if a_type == 'idle':
-            image = self.idle_animations[self.frame]
-            
-        elif a_type == 'run':
-            image = self.run_animations[self.frame]
+                elif event.key == pygame.K_SPACE and not self.is_jumping:
+                    self.is_jumping = True
         
-        elif a_type == 'jump':
+        # handle keys pressed
+        if pressed[pygame.K_d]:
+            # running
+            if pressed[pygame.K_LSHIFT]:
+                if self.speed < MAX_PLAYER_SPEED:
+                    self.speed = self.speed * SPEED_INC
+
+        elif pressed[pygame.K_a]:
+            # running
+            if pressed[pygame.K_LSHIFT]:
+                if self.speed > -MAX_PLAYER_SPEED:
+
+                    self.speed = self.speed * SPEED_INC
+
+        else:
+            # stand still
+            self.speed = 0
+
+
+    def draw(self, screen):
+        flipped = None
+        if self.is_jumping:
             image = self.jump_animations[self.frame % 2]
+            if self.speed < 0:
+                flipped = True
+        
+        else:
+            if self.speed == 0:
+                image = self.idle_animations[self.frame]
+
+            else:
+                image = self.run_animations[self.frame]
+                if self.speed < 0:
+                    flipped = True
 
         if flipped:
             flipped_image = pygame.transform.flip(image, True, False)
