@@ -15,6 +15,7 @@ I've got my sprites from https://luizmelo.itch.io/
 - 'd' -> right
 - 'spacebar' -> jump
 - 'shift' -> run
+- left ctrl -> attack
 
 # Contributing
 - Please do what you like!
