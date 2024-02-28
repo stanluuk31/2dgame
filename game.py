@@ -74,8 +74,8 @@ class Game:
                 if self.bgs[i].rect.left > 1:
                     self.bgs[i-1].set_position(self.bgs[i].rect.left - self.bgs[i].width)
                     
-            self.bgs[i-1].update(self.bgs[i].speed)
-            self.bgs[i].update(self.bgs[i].speed)
+            self.bgs[i-1].update()
+            self.bgs[i].update()
 
 
     def run(self):

@@ -26,6 +26,9 @@ class Background():
                     self.speed = -self.speed_mul
 
         # keys holded
+        if pressed[pygame.K_d] and pressed[pygame.K_a]:
+            return
+        
         if pressed[pygame.K_d]:
             if self.speed < MAX_BACKGROUND_SPEED:
                 self.speed *= SPEED_INC
@@ -37,9 +40,8 @@ class Background():
             self.speed = 0
 
 
-    def update(self,speed):
-
-        self.rect.x -= speed * self.speed_mul
+    def update(self):
+        self.rect.x -= self.speed * self.speed_mul
 
         
     def set_position(self, x):
@@ -132,7 +134,6 @@ class Player:
 
                 elif event.key == pygame.K_LCTRL and not self.is_attacking:
                     self.is_attacking = True
-                    self.frame = 0
 
                 elif event.key == pygame.K_SPACE and not self.is_jumping:
                     self.is_jumping = True
@@ -147,8 +148,8 @@ class Player:
         elif pressed[pygame.K_a]:
             # running
             if pressed[pygame.K_LSHIFT]:
-                if self.speed > -MAX_PLAYER_SPEED:
 
+                if self.speed > -MAX_PLAYER_SPEED:
                     self.speed = self.speed * SPEED_INC
 
         else:
@@ -164,7 +165,7 @@ class Player:
         if self.is_attacking:
             # make sure the frame does not go out of bounds
             image = self.a1_imgs[self.frame % 5]
-            
+
             if self.frame > 0 and self.frame % 5 == 0:
                 self.is_attacking = False
 
