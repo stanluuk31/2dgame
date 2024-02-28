@@ -62,16 +62,16 @@ class Player:
         self.y = HEIGHT - self.dimensions
 
 
-        self.idle_image = pygame.image.load('player/Idle.png').convert_alpha()
-        self.idle_sprite = SpriteSheet(self.idle_image)
+        idle_image = pygame.image.load('player/Idle.png').convert_alpha()
+        self.idle_sprite = SpriteSheet(idle_image)
         self.idle_animations = []
         self.a_count = 8
 
         for i in range(self.a_count):
             self.idle_animations.append(self.idle_sprite.get_image(i, 150, 150, self.scale, (0, 0, 0)))
 
-        self.running_image = pygame.image.load('player/Run.png').convert_alpha()
-        self.run_sprite = SpriteSheet(self.running_image)
+        running_image = pygame.image.load('player/Run.png').convert_alpha()
+        self.run_sprite = SpriteSheet(running_image)
         self.run_animations = []
 
         for i in range(self.a_count):
@@ -79,13 +79,23 @@ class Player:
 
         self.is_jumping = False
 
-        self.jumping_image = pygame.image.load('player/Jump.png').convert_alpha()
-        self.jump_sprite = SpriteSheet(self.jumping_image)
+        jumping_image = pygame.image.load('player/Jump.png').convert_alpha()
+        self.jump_sprite = SpriteSheet(jumping_image)
         self.jump_animations = []
         self.j_count = 20
 
         for i in range(self.j_count):
             self.jump_animations.append(self.jump_sprite.get_image(i, 150, 150, self.scale, (0, 0, 0)))
+
+        self.is_attacking = False
+        attack_img1 = pygame.image.load('player/Attack1.png').convert_alpha()
+        self.attack1_sprite = SpriteSheet(attack_img1)
+        a1_count = 5
+
+        self.a1_imgs = []
+        for i in range(a1_count):
+            self.a1_imgs.append(self.attack1_sprite.get_image(i, 150, 150, self.scale, (0, 0, 0)))
+
 
 
     def update(self, width):
@@ -120,6 +130,10 @@ class Player:
                 elif event.key == pygame.K_a:
                     self.speed = -1
 
+                elif event.key == pygame.K_LCTRL and not self.is_attacking:
+                    self.is_attacking = True
+                    self.frame = 0
+
                 elif event.key == pygame.K_SPACE and not self.is_jumping:
                     self.is_jumping = True
         
@@ -144,19 +158,25 @@ class Player:
 
     def draw(self, screen):
         flipped = None
-        if self.is_jumping:
+        if self.speed < 0:
+            flipped = True
+
+        if self.is_attacking:
+            # make sure the frame does not go out of bounds
+            image = self.a1_imgs[self.frame % 5]
+            
+            if self.frame > 0 and self.frame % 5 == 0:
+                self.is_attacking = False
+
+        elif self.is_jumping:
             image = self.jump_animations[self.frame % 2]
-            if self.speed < 0:
-                flipped = True
-        
+
         else:
             if self.speed == 0:
                 image = self.idle_animations[self.frame]
 
             else:
                 image = self.run_animations[self.frame]
-                if self.speed < 0:
-                    flipped = True
 
         if flipped:
             flipped_image = pygame.transform.flip(image, True, False)
@@ -184,6 +204,6 @@ class SpriteSheet:
 class Monster:
     pass
 
-class Bomb:
+class Bombd:
     def __init__(self, image):
         pass
