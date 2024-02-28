@@ -13,3 +13,5 @@ This is a hobby project of mine I work on sometimes when I am bored.
 - 'd' -> right
 - 'spacebar' -> jump
 - 'shift' -> run
+
+# contributing
