@@ -14,4 +14,5 @@ This is a hobby project of mine I work on sometimes when I am bored.
 - 'spacebar' -> jump
 - 'shift' -> run
 
-# contributing
+# Contributing
+- Please do what you like!
